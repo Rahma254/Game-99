@@ -3,304 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Slot Machine</title>
+    
+    <!-- SEO Tags - Siap untuk Anda verifikasi -->
+    <title>Nabila Gaming Studio - Mainkan Game Dingdong Arcade Klasik</title>
+    <meta name="description" content="Nabila Gaming Studio adalah portal untuk bermain game arcade (dingdong) klasik dari era 1990-an seperti Captain Commando, The Punisher, dan Sunset Riders langsung di browser Anda.">
+    <meta name="keywords" content="game dingdong, nabila gaming, game arcade, 1990an, Captain Commando, The Punisher, Sunset Riders, main game online, game klasik, emulator online">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --gold: #FFD700;
-            --dark-bg: #1a1a1a;
-            --machine-bg: #2c2c2c;
-            --reel-bg: #111;
-            --text-color: #f0f0f0;
-            --win-glow: #00ff00;
-            --jackpot-glow: var(--gold);
+            --primary-glow: #00f6ff;
+            --secondary-glow: #ff00e1;
+            --gold-glow: #ffd700;
+            --dark-bg: #0f001a;
+            --light-bg: #2a004a;
         }
+
         body {
             font-family: 'Poppins', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(https://www.toptal.com/designers/subtlepatterns/uploads/dark-denim.png);
+            background-color: var(--dark-bg);
+            color: #f0f0f0;
+            overflow-x: hidden;
+            background-image: linear-gradient(rgba(15, 0, 26, 0.95), rgba(15, 0, 26, 0.95)), url('https://www.toptal.com/designers/subtlepatterns/uploads/double-bubble-outline.png');
         }
-        .slot-machine {
-            background: linear-gradient(145deg, #333, #222);
-            border: 5px solid #444;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 0 10px #000, 0 0 40px var(--gold), inset 0 0 15px #000;
-            width: 90%;
-            max-width: 500px;
+
+        .marquee-container {
+            width: 100%;
+            background: linear-gradient(90deg, var(--primary-glow), var(--secondary-glow));
+            color: black;
+            padding: 8px 0;
+            font-weight: 600;
+            overflow: hidden;
+            white-space: nowrap;
+            box-shadow: 0 0 15px var(--primary-glow);
         }
-        h1 {
-            color: var(--gold);
+
+        .marquee-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: scroll-left 30s linear infinite;
+        }
+
+        @keyframes scroll-left {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        header {
             text-align: center;
-            margin: 0 0 20px 0;
-            font-weight: 700;
-            text-shadow: 0 0 10px var(--gold);
+            margin-bottom: 30px;
         }
-        .display-panel {
-            display: flex;
-            justify-content: space-between;
-            background: #111;
-            padding: 10px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 2px solid #555;
-            font-family: 'Roboto Mono', monospace;
+
+        header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5em;
+            color: var(--gold-glow);
+            text-shadow: 0 0 5px #fff, 0 0 10px var(--gold-glow), 0 0 20px var(--gold-glow);
+            margin: 0;
         }
-        .display-panel div {
-            text-align: center;
-            color: var(--text-color);
+
+        .game-section {
+            background-color: rgba(0,0,0,0.3);
+            border: 2px solid var(--primary-glow);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 25px rgba(0, 246, 255, 0.3);
         }
-        .display-panel span {
-            font-size: 14px;
-            color: #aaa;
-        }
-        .display-panel .value {
-            font-size: 24px;
-            color: var(--gold);
-        }
-        .reels {
+
+        .game-tabs {
             display: flex;
             justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
             margin-bottom: 20px;
-            background: var(--reel-bg);
-            border: 3px solid #555;
-            border-radius: 10px;
-            padding: 15px;
-            overflow: hidden;
         }
-        .reel {
-            width: 120px;
-            height: 120px;
-            margin: 0 5px;
-            overflow: hidden;
-            border-radius: 5px;
-            background: #000;
-            box-shadow: inset 0 0 10px #000;
-        }
-        .reel-strip {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
-        }
-        .reel-strip span {
-            font-size: 100px;
-            line-height: 120px;
-        }
-        #status-message {
-            text-align: center;
-            font-size: 28px;
-            font-weight: bold;
-            height: 40px;
-            margin-bottom: 20px;
-            color: var(--text-color);
-            transition: all 0.3s;
-        }
-        #status-message.win {
-            color: var(--win-glow);
-            text-shadow: 0 0 15px var(--win-glow);
-            transform: scale(1.1);
-        }
-        #status-message.jackpot {
-            color: var(--jackpot-glow);
-            text-shadow: 0 0 20px var(--jackpot-glow);
-            transform: scale(1.2);
-            animation: jackpot-pulse 1s infinite;
-        }
-        @keyframes jackpot-pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .bet-controls {
-            display: flex;
-            align-items: center;
-        }
-        .bet-btn {
-            width: 40px; height: 40px; font-size: 24px;
-            background: #444; color: var(--gold);
-            border: 2px solid #555; border-radius: 50%;
+
+        .tab-button {
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--primary-glow);
+            background-color: transparent;
+            border: 2px solid var(--primary-glow);
+            border-radius: 8px;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
-        #spin-button {
-            font-size: 28px; font-weight: bold;
-            padding: 15px 40px;
-            background: linear-gradient(180deg, #fca311, #e85d04);
-            color: white;
+
+        .tab-button:hover {
+            background-color: var(--primary-glow);
+            color: var(--dark-bg);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .tab-button.active {
+            background-color: var(--primary-glow);
+            color: var(--dark-bg);
+            box-shadow: 0 0 20px var(--primary-glow);
+            border-color: #fff;
+        }
+
+        .game-window {
+            width: 100%;
+            height: 600px;
+            background-color: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid var(--secondary-glow);
+            box-shadow: 0 0 20px var(--secondary-glow);
+        }
+        
+        .game-window iframe {
+            width: 100%;
+            height: 100%;
             border: none;
+        }
+        
+        .info-section {
+            margin-top: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--light-bg), var(--dark-bg));
             border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 5px #a04000;
-            transition: all 0.1s ease;
+            border: 1px solid var(--secondary-glow);
+            text-align: center;
         }
-        #spin-button:disabled {
-            background: #6c757d;
-            box-shadow: 0 5px #495057;
-            cursor: not-allowed;
+        
+        .info-section h2 {
+            color: var(--gold-glow);
+            font-family: 'Orbitron', sans-serif;
         }
-        #spin-button:not(:disabled):active {
-            box-shadow: 0 2px #a04000;
-            transform: translateY(3px);
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.5em; }
+            .game-window { height: 450px; }
+            .tab-button { padding: 10px 15px; font-size: 0.9em; }
         }
     </style>
 </head>
 <body>
 
-    <div class="slot-machine">
-        <h1>GOLDEN SPIN</h1>
-        <div class="display-panel">
-            <div>
-                <span>SALDO</span>
-                <div id="saldo-value" class="value"></div>
-            </div>
-            <div>
-                <span>TARUHAN</span>
-                <div id="taruhan-value" class="value"></div>
-            </div>
-        </div>
-        <div class="reels">
-            <div class="reel"><div class="reel-strip" id="reel1-strip"></div></div>
-            <div class="reel"><div class="reel-strip" id="reel2-strip"></div></div>
-            <div class="reel"><div class="reel-strip" id="reel3-strip"></div></div>
-        </div>
-        <div id="status-message">Tekan SPIN!</div>
-        <div class="controls">
-            <div class="bet-controls">
-                <button class="bet-btn" id="bet-down">-</button>
-                <button class="bet-btn" id="bet-up" style="margin-left:10px;">+</button>
-            </div>
-            <button id="spin-button">SPIN</button>
+    <div class="marquee-container">
+        <div class="marquee-text">
+            Selamat Datang di Nabila Gaming Studio! Pilih game favoritmu dari era 90-an dan mainkan sekarang juga! --- Captain Commando, The Punisher, dan Sunset Riders menantimu! --- 
         </div>
     </div>
 
+    <div class="container">
+        <header>
+            <h1>NABILA GAMING STUDIO</h1>
+        </header>
+
+        <main class="game-section">
+            <div class="game-tabs" id="game-tabs">
+                <button class="tab-button" data-game="commando">Captain Commando</button>
+                <button class="tab-button" data-game="punisher">The Punisher</button>
+                <button class="tab-button" data-game="cowboy">Sunset Riders (Koboi)</button>
+            </div>
+            
+            <div class="game-window">
+                <iframe id="game-frame" src="" allowfullscreen="true" frameborder="0"></iframe>
+            </div>
+        </main>
+        
+        <section class="info-section">
+            <h2>Tentang Studio Ini</h2>
+            <p>Nabila Gaming Studio adalah sebuah proyek dedikasi untuk melestarikan dan menghadirkan kembali keseruan game-game dingdong legendaris. Kami percaya bahwa keajaiban game klasik tidak lekang oleh waktu. Nikmati pengalaman bermain yang otentik langsung dari browser Anda, tanpa perlu instalasi apapun.</p>
+        </section>
+
+        <footer>
+            <p>© 2025 Nabila Gaming Studio Development. All Rights Reserved.</p>
+        </footer>
+    </div>
+
     <script>
-        const symbols = ['🍒', '🍋', '🍊', '🍇', '🍉', '🔔', '⭐', '💎', '7️⃣'];
-        const payouts = { '🍒': 5, '🍋': 5, '🍊': 10, '🍇': 10, '🍉': 15, '🔔': 20, '⭐': 50, '💎': 100, '7️⃣': 200 };
-        const SYMBOL_HEIGHT = 120;
-        const REEL_SPINS = 50; // How many "laps" the reel does
+        const gameTabs = document.getElementById('game-tabs');
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const gameFrame = document.getElementById('game-frame');
 
-        // DOM Elements
-        const reels = [document.getElementById('reel1-strip'), document.getElementById('reel2-strip'), document.getElementById('reel3-strip')];
-        const saldoValueEl = document.getElementById('saldo-value');
-        const taruhanValueEl = document.getElementById('taruhan-value');
-        const statusMessageEl = document.getElementById('status-message');
-        const spinButton = document.getElementById('spin-button');
-        const betUpButton = document.getElementById('bet-up');
-        const betDownButton = document.getElementById('bet-down');
-
-        // Game State
-        let saldo = 1000;
-        let taruhan = 10;
-        let isSpinning = false;
-
-        function setupReels() {
-            reels.forEach(reelStrip => {
-                reelStrip.innerHTML = ''; // Clear previous symbols
-                // Create a long strip of symbols for smooth spinning
-                const symbolClones = [...symbols, ...symbols, ...symbols]; // Add more for longer visual spin
-                for (let i = 0; i < REEL_SPINS; i++) {
-                    symbolClones.sort(() => Math.random() - 0.5); // Shuffle for each lap
-                    symbolClones.forEach(symbol => {
-                        const span = document.createElement('span');
-                        span.textContent = symbol;
-                        reelStrip.appendChild(span);
-                    });
-                }
-            });
-        }
-
-        function updateUI() {
-            saldoValueEl.textContent = `Rp ${saldo}`;
-            taruhanValueEl.textContent = `Rp ${taruhan}`;
-            spinButton.disabled = isSpinning || saldo < taruhan;
-        }
+        // URL embed dari Internet Archive
+        const gameSources = {
+            'commando': 'https://archive.org/embed/captcomm',
+            'punisher': 'https://archive.org/embed/punisher',
+            'cowboy': 'https://archive.org/embed/ssriders'
+        };
         
-        function spin() {
-            if (isSpinning || saldo < taruhan) return;
+        // Fungsi untuk mengaktifkan tab dan memuat game
+        function selectGame(gameKey) {
+            if (!gameSources[gameKey]) {
+                console.error('Game key not found:', gameKey);
+                return;
+            }
 
-            isSpinning = true;
-            saldo -= taruhan;
-            statusMessageEl.textContent = "BERPUTAR...";
-            statusMessageEl.className = '';
-            updateUI();
+            // Set source iframe
+            gameFrame.src = gameSources[gameKey];
 
-            const finalResults = [];
-            reels.forEach((reelStrip, index) => {
-                // Pick a random final symbol
-                const finalSymbolIndex = Math.floor(Math.random() * symbols.length);
-                finalResults.push(symbols[finalSymbolIndex]);
-                
-                // Calculate the final position on the strip
-                // Position is based on laps + final symbol index
-                const targetPosition = ((REEL_SPINS - 3) * symbols.length + finalSymbolIndex) * SYMBOL_HEIGHT;
-                
-                // Reset to top instantly then spin
-                reelStrip.style.transition = 'none';
-                reelStrip.style.transform = `translateY(0)`;
-                
-                // Force browser to repaint before applying transition
-                reelStrip.offsetHeight; 
-
-                // Apply the spin transition
-                reelStrip.style.transition = `transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)`;
-                reelStrip.style.transform = `translateY(-${targetPosition}px)`;
-            });
-
-            setTimeout(() => checkWin(finalResults), 4200);
-        }
-
-        function checkWin(results) {
-            const [r1, r2, r3] = results;
-
-            if (r1 === r2 && r2 === r3) {
-                const winnings = payouts[r1] * taruhan;
-                saldo += winnings;
-                statusMessageEl.textContent = `MENANG Rp ${winnings}!`;
-                if (r1 === '7️⃣') {
-                    statusMessageEl.classList.add('jackpot');
+            // Atur style tombol aktif
+            tabButtons.forEach(button => {
+                if (button.dataset.game === gameKey) {
+                    button.classList.add('active');
                 } else {
-                    statusMessageEl.classList.add('win');
+                    button.classList.remove('active');
                 }
-            } else {
-                statusMessageEl.textContent = "COBA LAGI!";
-            }
-
-            isSpinning = false;
-            if (saldo < taruhan) {
-                statusMessageEl.textContent = "SALDO TIDAK CUKUP!";
-            }
-            updateUI();
+            });
         }
-
-        // Event Listeners
-        spinButton.addEventListener('click', spin);
         
-        betUpButton.addEventListener('click', () => {
-            if (isSpinning) return;
-            taruhan = Math.min(taruhan + 10, 100, saldo);
-            updateUI();
+        // Tambahkan event listener ke setiap tombol
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const gameKey = button.dataset.game;
+                selectGame(gameKey);
+            });
         });
 
-        betDownButton.addEventListener('click', () => {
-            if (isSpinning) return;
-            taruhan = Math.max(taruhan - 10, 10);
-            updateUI();
+        // Muat game pertama (Captain Commando) secara default saat halaman dibuka
+        document.addEventListener('DOMContentLoaded', () => {
+            selectGame('commando');
         });
-
-        // Initialize Game
-        setupReels();
-        updateUI();
     </script>
 </body>
 </html>
