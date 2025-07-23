@@ -3,226 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Domino Qiu-Qiu</title>
+    <title>Jackpot Slot Machine</title>
     <style>
         body {
-            font-family: sans-serif;
-            text-align: center;
-            background-color: #f0f0f0;
-            margin: 20px;
-        }
-        .hand {
+            font-family: 'Arial Black', sans-serif;
             display: flex;
             justify-content: center;
-            margin-bottom: 20px;
-        }
-        .card {
-            width: 60px;
-            height: 120px;
-            border: 1px solid #333;
-            border-radius: 5px;
-            margin: 5px;
-            background-color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
             align-items: center;
-            font-size: 20px;
-            font-weight: bold;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
         }
-        .card-value {
-            border-top: 1px solid #333;
-            border-bottom: 1px solid #333;
-            width: 100%;
+        .machine {
+            background-color: #f1f1f1;
+            border: 10px solid #c0c0c0;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3), inset 0 0 15px rgba(0,0,0,0.5);
         }
-        .button-container {
-            margin-top: 20px;
+        h1 {
+            color: #333;
+            text-align: center;
+            text-shadow: 2px 2px 4px #aaa;
         }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
+        .reels {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            border: 5px solid #888;
+            background-color: #fff;
+            padding: 15px;
+        }
+        .reel {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #555;
+            margin: 0 10px;
+            font-size: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fafafa;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        .controls {
+            text-align: center;
+        }
+        #spinButton {
+            font-size: 24px;
+            padding: 15px 40px;
             cursor: pointer;
+            color: white;
+            background: linear-gradient(180deg, #ff4b2b, #ff416c);
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px #d43f3a;
+            transition: all 0.1s ease;
+        }
+        #spinButton:active {
+            box-shadow: 0 2px #d43f3a;
+            transform: translateY(3px);
         }
         #result {
-            margin-top: 20px;
-            font-size: 18px;
+            margin-top: 25px;
+            font-size: 28px;
+            color: #fff;
+            text-align: center;
+            height: 40px;
             font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
     </style>
 </head>
 <body>
 
-    <h1>Domino Qiu-Qiu</h1>
-
-    <h2>Kartu Anda</h2>
-    <div id="player-hand" class="hand"></div>
-    <div id="player-score"></div>
-
-    <h2>Kartu Komputer</h2>
-    <div id="computer-hand" class="hand"></div>
-    <div id="computer-score"></div>
-
-    <div class="button-container">
-        <button id="deal-button">Bagikan Kartu</button>
-        <button id="check-button" disabled>Cek Hasil</button>
+    <div class="machine">
+        <h1>JACKPOT 777</h1>
+        <div class="reels">
+            <div class="reel" id="reel1">🍒</div>
+            <div class="reel" id="reel2">🍋</div>
+            <div class="reel" id="reel3">🍊</div>
+        </div>
+        <div class="controls">
+            <button id="spinButton">SPIN!</button>
+        </div>
+        <div id="result"></div>
     </div>
 
-    <div id="result"></div>
-
     <script>
-        const dealButton = document.getElementById('deal-button');
-        const checkButton = document.getElementById('check-button');
-        const playerHandDiv = document.getElementById('player-hand');
-        const playerScoreDiv = document.getElementById('player-score');
-        const computerHandDiv = document.getElementById('computer-hand');
-        const computerScoreDiv = document.getElementById('computer-score');
+        const symbols = ["🍒", "🍋", "🍊", "🍇", "🍉", "🔔", "💎"];
+        const reel1 = document.getElementById('reel1');
+        const reel2 = document.getElementById('reel2');
+        const reel3 = document.getElementById('reel3');
+        const spinButton = document.getElementById('spinButton');
         const resultDiv = document.getElementById('result');
 
-        let deck = [];
-        let playerHand = [];
-        let computerHand = [];
-
-        function createDeck() {
-            deck = [];
-            for (let i = 0; i <= 6; i++) {
-                for (let j = i; j <= 6; j++) {
-                    deck.push({ top: i, bottom: j });
-                }
-            }
-        }
-
-        function shuffleDeck() {
-            for (let i = deck.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [deck[i], deck[j]] = [deck[j], deck[i]];
-            }
-        }
-
-        function dealCards() {
-            playerHand = [];
-            computerHand = [];
-            for (let i = 0; i < 4; i++) {
-                playerHand.push(deck.pop());
-                computerHand.push(deck.pop());
-            }
-        }
-
-        function renderCard(card, container) {
-            const cardDiv = document.createElement('div');
-            cardDiv.className = 'card';
-            cardDiv.innerHTML = `
-                <div class="card-value">${card.top}</div>
-                <div>-</div>
-                <div class="card-value">${card.bottom}</div>
-            `;
-            container.appendChild(cardDiv);
-        }
-
-        function renderHands() {
-            playerHandDiv.innerHTML = '';
-            computerHandDiv.innerHTML = '';
-            playerHand.forEach(card => renderCard(card, playerHandDiv));
-            computerHand.forEach(card => renderCard(card, computerHandDiv));
-        }
-
-        function calculateScore(hand) {
-            let bestScore = [0, 0];
-            let bestCombination = [];
-
-            const combinations = [
-                [[0, 1], [2, 3]],
-                [[0, 2], [1, 3]],
-                [[0, 3], [1, 2]]
-            ];
-
-            combinations.forEach(combo => {
-                const pair1_val = (hand[combo[0][0]].top + hand[combo[0][0]].bottom + hand[combo[0][1]].top + hand[combo[0][1]].bottom) % 10;
-                const pair2_val = (hand[combo[1][0]].top + hand[combo[1][0]].bottom + hand[combo[1][1]].top + hand[combo[1][1]].bottom) % 10;
-                
-                let currentScore;
-                if (pair1_val === 0) pair1_val = 10;
-                if (pair2_val === 0) pair2_val = 10;
-
-                if (pair1_val > pair2_val) {
-                    currentScore = [pair1_val, pair2_val];
-                } else {
-                    currentScore = [pair2_val, pair1_val];
-                }
-                
-                if (currentScore[0] > bestScore[0] || (currentScore[0] === bestScore[0] && currentScore[1] > bestScore[1])) {
-                    bestScore = currentScore;
-                }
-            });
-
-            return {
-                score: bestScore.map(s => s === 10 ? 9 : s),
-                totalPips: hand.reduce((sum, card) => sum + card.top + card.bottom, 0)
-            };
-        }
-        
-        function getSpecialCardType(hand, scoreInfo) {
-            const totalPips = scoreInfo.totalPips;
-            const isBalak = hand.every(card => card.top === card.bottom);
-            const isSixDevils = hand.every(card => card.top + card.bottom === 6);
-
-            if (isSixDevils) return "Enam Dewa";
-            if (isBalak) return "Kartu Balak";
-            if (totalPips >= 39) return "Murni Besar";
-            if (totalPips <= 9) return "Murni Kecil";
-            return null;
-        }
-
-        dealButton.addEventListener('click', () => {
-            createDeck();
-            shuffleDeck();
-            dealCards();
-            renderHands();
-
-            playerScoreDiv.textContent = '';
-            computerScoreDiv.textContent = '';
+        spinButton.addEventListener('click', () => {
             resultDiv.textContent = '';
-            checkButton.disabled = false;
-        });
+            spinButton.disabled = true;
 
-        checkButton.addEventListener('click', () => {
-            const playerScoreInfo = calculateScore(playerHand);
-            const computerScoreInfo = calculateScore(computerHand);
+            let spinCount = 0;
+            const maxSpins = 30; // Total frames for animation
 
-            const playerSpecial = getSpecialCardType(playerHand, playerScoreInfo);
-            const computerSpecial = getSpecialCardType(computerHand, computerScoreInfo);
+            const spinInterval = setInterval(() => {
+                reel1.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                reel2.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                reel3.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                spinCount++;
 
-            playerScoreDiv.textContent = `Skor: ${playerScoreInfo.score[0]} - ${playerScoreInfo.score[1]}` + (playerSpecial ? ` (${playerSpecial})` : '');
-            computerScoreDiv.textContent = `Skor: ${computerScoreInfo.score[0]} - ${computerScoreInfo.score[1]}` + (computerSpecial ? ` (${computerSpecial})` : '');
-
-            const specialRank = ["Enam Dewa", "Kartu Balak", "Murni Besar", "Murni Kecil"];
-            const playerSpecialRank = playerSpecial ? specialRank.indexOf(playerSpecial) : 4;
-            const computerSpecialRank = computerSpecial ? specialRank.indexOf(computerSpecial) : 4;
-            
-            let winner = '';
-
-            if (playerSpecialRank < computerSpecialRank) {
-                winner = "Anda Menang!";
-            } else if (computerSpecialRank < playerSpecialRank) {
-                winner = "Komputer Menang!";
-            } else {
-                if (playerScoreInfo.score[0] > computerScoreInfo.score[0]) {
-                    winner = "Anda Menang!";
-                } else if (computerScoreInfo.score[0] > playerScoreInfo.score[0]) {
-                    winner = "Komputer Menang!";
-                } else {
-                    if (playerScoreInfo.score[1] > computerScoreInfo.score[1]) {
-                        winner = "Anda Menang!";
-                    } else if (computerScoreInfo.score[1] > playerScoreInfo.score[1]) {
-                        winner = "Komputer Menang!";
-                    } else {
-                        winner = "Seri!";
-                    }
+                if (spinCount > maxSpins) {
+                    clearInterval(spinInterval);
+                    checkWin();
+                    spinButton.disabled = false;
                 }
-            }
-
-            resultDiv.textContent = winner;
-            checkButton.disabled = true;
+            }, 100); // Animation speed in milliseconds
         });
+
+        function checkWin() {
+            const r1 = reel1.textContent;
+            const r2 = reel2.textContent;
+            const r3 = reel3.textContent;
+
+            if (r1 === r2 && r2 === r3) {
+                if (r1 === "💎") {
+                    resultDiv.textContent = "JACKPOT! 💎💎💎";
+                } else {
+                    resultDiv.textContent = "SELAMAT, ANDA MENANG!";
+                }
+            } else {
+                resultDiv.textContent = "COBA LAGI!";
+            }
+        }
     </script>
+
 </body>
 </html>
