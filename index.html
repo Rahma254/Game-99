@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domino Qiu-Qiu</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 20px;
+        }
+        .hand {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .card {
+            width: 60px;
+            height: 120px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            margin: 5px;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .card-value {
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #333;
+            width: 100%;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Domino Qiu-Qiu</h1>
+
+    <h2>Kartu Anda</h2>
+    <div id="player-hand" class="hand"></div>
+    <div id="player-score"></div>
+
+    <h2>Kartu Komputer</h2>
+    <div id="computer-hand" class="hand"></div>
+    <div id="computer-score"></div>
+
+    <div class="button-container">
+        <button id="deal-button">Bagikan Kartu</button>
+        <button id="check-button" disabled>Cek Hasil</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        const dealButton = document.getElementById('deal-button');
+        const checkButton = document.getElementById('check-button');
+        const playerHandDiv = document.getElementById('player-hand');
+        const playerScoreDiv = document.getElementById('player-score');
+        const computerHandDiv = document.getElementById('computer-hand');
+        const computerScoreDiv = document.getElementById('computer-score');
+        const resultDiv = document.getElementById('result');
+
+        let deck = [];
+        let playerHand = [];
+        let computerHand = [];
+
+        function createDeck() {
+            deck = [];
+            for (let i = 0; i <= 6; i++) {
+                for (let j = i; j <= 6; j++) {
+                    deck.push({ top: i, bottom: j });
+                }
+            }
+        }
+
+        function shuffleDeck() {
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+        }
+
+        function dealCards() {
+            playerHand = [];
+            computerHand = [];
+            for (let i = 0; i < 4; i++) {
+                playerHand.push(deck.pop());
+                computerHand.push(deck.pop());
+            }
+        }
+
+        function renderCard(card, container) {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'card';
+            cardDiv.innerHTML = `
+                <div class="card-value">${card.top}</div>
+                <div>-</div>
+                <div class="card-value">${card.bottom}</div>
+            `;
+            container.appendChild(cardDiv);
+        }
+
+        function renderHands() {
+            playerHandDiv.innerHTML = '';
+            computerHandDiv.innerHTML = '';
+            playerHand.forEach(card => renderCard(card, playerHandDiv));
+            computerHand.forEach(card => renderCard(card, computerHandDiv));
+        }
+
+        function calculateScore(hand) {
+            let bestScore = [0, 0];
+            let bestCombination = [];
+
+            const combinations = [
+                [[0, 1], [2, 3]],
+                [[0, 2], [1, 3]],
+                [[0, 3], [1, 2]]
+            ];
+
+            combinations.forEach(combo => {
+                const pair1_val = (hand[combo[0][0]].top + hand[combo[0][0]].bottom + hand[combo[0][1]].top + hand[combo[0][1]].bottom) % 10;
+                const pair2_val = (hand[combo[1][0]].top + hand[combo[1][0]].bottom + hand[combo[1][1]].top + hand[combo[1][1]].bottom) % 10;
+                
+                let currentScore;
+                if (pair1_val === 0) pair1_val = 10;
+                if (pair2_val === 0) pair2_val = 10;
+
+                if (pair1_val > pair2_val) {
+                    currentScore = [pair1_val, pair2_val];
+                } else {
+                    currentScore = [pair2_val, pair1_val];
+                }
+                
+                if (currentScore[0] > bestScore[0] || (currentScore[0] === bestScore[0] && currentScore[1] > bestScore[1])) {
+                    bestScore = currentScore;
+                }
+            });
+
+            return {
+                score: bestScore.map(s => s === 10 ? 9 : s),
+                totalPips: hand.reduce((sum, card) => sum + card.top + card.bottom, 0)
+            };
+        }
+        
+        function getSpecialCardType(hand, scoreInfo) {
+            const totalPips = scoreInfo.totalPips;
+            const isBalak = hand.every(card => card.top === card.bottom);
+            const isSixDevils = hand.every(card => card.top + card.bottom === 6);
+
+            if (isSixDevils) return "Enam Dewa";
+            if (isBalak) return "Kartu Balak";
+            if (totalPips >= 39) return "Murni Besar";
+            if (totalPips <= 9) return "Murni Kecil";
+            return null;
+        }
+
+        dealButton.addEventListener('click', () => {
+            createDeck();
+            shuffleDeck();
+            dealCards();
+            renderHands();
+
+            playerScoreDiv.textContent = '';
+            computerScoreDiv.textContent = '';
+            resultDiv.textContent = '';
+            checkButton.disabled = false;
+        });
+
+        checkButton.addEventListener('click', () => {
+            const playerScoreInfo = calculateScore(playerHand);
+            const computerScoreInfo = calculateScore(computerHand);
+
+            const playerSpecial = getSpecialCardType(playerHand, playerScoreInfo);
+            const computerSpecial = getSpecialCardType(computerHand, computerScoreInfo);
+
+            playerScoreDiv.textContent = `Skor: ${playerScoreInfo.score[0]} - ${playerScoreInfo.score[1]}` + (playerSpecial ? ` (${playerSpecial})` : '');
+            computerScoreDiv.textContent = `Skor: ${computerScoreInfo.score[0]} - ${computerScoreInfo.score[1]}` + (computerSpecial ? ` (${computerSpecial})` : '');
+
+            const specialRank = ["Enam Dewa", "Kartu Balak", "Murni Besar", "Murni Kecil"];
+            const playerSpecialRank = playerSpecial ? specialRank.indexOf(playerSpecial) : 4;
+            const computerSpecialRank = computerSpecial ? specialRank.indexOf(computerSpecial) : 4;
+            
+            let winner = '';
+
+            if (playerSpecialRank < computerSpecialRank) {
+                winner = "Anda Menang!";
+            } else if (computerSpecialRank < playerSpecialRank) {
+                winner = "Komputer Menang!";
+            } else {
+                if (playerScoreInfo.score[0] > computerScoreInfo.score[0]) {
+                    winner = "Anda Menang!";
+                } else if (computerScoreInfo.score[0] > playerScoreInfo.score[0]) {
+                    winner = "Komputer Menang!";
+                } else {
+                    if (playerScoreInfo.score[1] > computerScoreInfo.score[1]) {
+                        winner = "Anda Menang!";
+                    } else if (computerScoreInfo.score[1] > playerScoreInfo.score[1]) {
+                        winner = "Komputer Menang!";
+                    } else {
+                        winner = "Seri!";
+                    }
+                }
+            }
+
+            resultDiv.textContent = winner;
+            checkButton.disabled = true;
+        });
+    </script>
+</body>
+</html>
