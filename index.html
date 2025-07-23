@@ -3,139 +3,420 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jackpot Slot Machine</title>
+    <title>Game Monopoli Lite</title>
     <style>
+        :root {
+            --player-color: #007bff;
+            --computer-color: #dc3545;
+            --board-bg: #cdeacd;
+            --tile-bg: #f1fbeA;
+        }
         body {
-            font-family: 'Arial Black', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(to right, #6a11cb, #2575fc);
+            align-items: flex-start;
+            padding-top: 20px;
+            background-color: #e9ecef;
+            gap: 20px;
         }
-        .machine {
-            background-color: #f1f1f1;
-            border: 10px solid #c0c0c0;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3), inset 0 0 15px rgba(0,0,0,0.5);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-            text-shadow: 2px 2px 4px #aaa;
-        }
-        .reels {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-            border: 5px solid #888;
-            background-color: #fff;
+        .player-info {
+            width: 200px;
             padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-top: 5px solid;
+            transition: all 0.3s ease;
         }
-        .reel {
-            width: 100px;
-            height: 100px;
-            border: 2px solid #555;
-            margin: 0 10px;
-            font-size: 80px;
+        .player-info h3 { margin-top: 0; }
+        .player-info .money { font-size: 20px; font-weight: bold; color: #28a745; }
+        .player-info .assets-list { list-style: none; padding: 0; margin-top: 10px; font-size: 14px; }
+        #player-panel { border-color: var(--player-color); }
+        #computer-panel { border-color: var(--computer-color); }
+        .player-info.active-turn { box-shadow: 0 0 15px var(--border-color, #000); transform: scale(1.05); }
+
+        .game-container { text-align: center; }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(8, 65px);
+            grid-template-rows: repeat(5, 65px);
+            gap: 2px;
+            background-color: #a3c2a3;
+            border: 3px solid #333;
+            position: relative;
+            width: 524px; /* 8 * 65 + 4 */
+        }
+        .tile {
+            background-color: var(--tile-bg);
+            border: 1px solid #ccc;
+            font-size: 10px;
+            text-align: center;
+            position: relative;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: #fafafa;
-            overflow: hidden;
-            border-radius: 10px;
+            padding: 2px;
         }
-        .controls {
-            text-align: center;
+        .tile .price { font-size: 11px; color: #28a745; font-weight: bold; }
+        .tile.start { background-color: #28a745; color: white; }
+        .tile.special { background-color: #ffc107; }
+        .tile.tax { background-color: #6c757d; color: white; }
+        .tile-owner-indicator {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
         }
-        #spinButton {
-            font-size: 24px;
-            padding: 15px 40px;
-            cursor: pointer;
-            color: white;
-            background: linear-gradient(180deg, #ff4b2b, #ff416c);
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 5px #d43f3a;
-            transition: all 0.1s ease;
+
+        .player, .computer {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            position: absolute;
+            transition: all 0.5s ease-in-out;
+            z-index: 10;
+            border: 3px solid white;
+            box-shadow: 0 0 5px black;
         }
-        #spinButton:active {
-            box-shadow: 0 2px #d43f3a;
-            transform: translateY(3px);
+        .player { background-color: var(--player-color); }
+        .computer { background-color: var(--computer-color); }
+
+        .controls { margin-top: 15px; }
+        #dice {
+            width: 50px; height: 50px; border: 2px solid #333; border-radius: 8px;
+            display: inline-flex; justify-content: center; align-items: center;
+            font-size: 28px; font-weight: bold; margin-bottom: 10px;
         }
-        #result {
-            margin-top: 25px;
-            font-size: 28px;
-            color: #fff;
-            text-align: center;
-            height: 40px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        #rollButton {
+            font-size: 16px; padding: 12px 25px; cursor: pointer; background-color: #007bff;
+            color: white; border: none; border-radius: 5px;
         }
+        #rollButton:disabled { background-color: #6c757d; cursor: not-allowed; }
+        #status { margin-top: 10px; font-size: 18px; font-weight: bold; height: 25px; color: #333; }
+
+        .popup-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 100;
+        }
+        .popup-content {
+            background: white; padding: 25px; border-radius: 10px; text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        .popup-content button {
+            padding: 10px 20px; font-size: 16px; margin: 0 10px;
+            border: none; border-radius: 5px; cursor: pointer;
+        }
+        #buy-btn { background-color: #28a745; color: white; }
+        #pass-btn { background-color: #dc3545; color: white; }
     </style>
 </head>
 <body>
 
-    <div class="machine">
-        <h1>JACKPOT 777</h1>
-        <div class="reels">
-            <div class="reel" id="reel1">🍒</div>
-            <div class="reel" id="reel2">🍋</div>
-            <div class="reel" id="reel3">🍊</div>
-        </div>
+    <div id="player-panel" class="player-info">
+        <h3>Anda</h3>
+        <div class="money" id="player-money">Rp 0</div>
+        <h4>Aset:</h4>
+        <ul id="player-assets" class="assets-list"><li>-</li></ul>
+    </div>
+
+    <div class="game-container">
+        <h1>Monopoli Lite</h1>
+        <div class="board" id="board"></div>
+        <div id="status">Lempar dadu untuk mulai!</div>
         <div class="controls">
-            <button id="spinButton">SPIN!</button>
+            <div id="dice">?</div><br>
+            <button id="rollButton">LEMPAR DADU</button>
+            <button id="restartButton" style="display:none;">Mulai Ulang</button>
         </div>
-        <div id="result"></div>
+    </div>
+
+    <div id="computer-panel" class="player-info">
+        <h3>Komputer</h3>
+        <div class="money" id="computer-money">Rp 0</div>
+        <h4>Aset:</h4>
+        <ul id="computer-assets" class="assets-list"><li>-</li></ul>
+    </div>
+
+    <div class="popup-overlay" id="buy-popup">
+        <div class="popup-content">
+            <h3 id="popup-title">Beli Properti?</h3>
+            <p id="popup-text"></p>
+            <button id="buy-btn">Beli</button>
+            <button id="pass-btn">Lewati</button>
+        </div>
     </div>
 
     <script>
-        const symbols = ["🍒", "🍋", "🍊", "🍇", "🍉", "🔔", "💎"];
-        const reel1 = document.getElementById('reel1');
-        const reel2 = document.getElementById('reel2');
-        const reel3 = document.getElementById('reel3');
-        const spinButton = document.getElementById('spinButton');
-        const resultDiv = document.getElementById('result');
+        // --- GAME DATA ---
+        const boardData = [
+            { name: 'START', type: 'start' },
+            { name: 'BSD', type: 'property', price: 60, rent: 10 },
+            { name: 'Kesempatan', type: 'special' },
+            { name: 'PIK', type: 'property', price: 80, rent: 12 },
+            { name: 'Pajak Jalan', type: 'tax', amount: 50 },
+            { name: 'SCBD', type: 'property', price: 120, rent: 20 },
+            { name: 'Menteng', type: 'property', price: 120, rent: 20 },
+            { name: 'Penjara', type: 'special' },
+            { name: 'Gading', type: 'property', price: 150, rent: 25 },
+            { name: 'Kesempatan', type: 'special' },
+            { name: 'PIM', type: 'property', price: 180, rent: 30 },
+            { name: 'Pajak Lux', type: 'tax', amount: 100 },
+            { name: 'Kemang', type: 'property', price: 200, rent: 35 },
+            { name: 'Senayan', type: 'property', price: 200, rent: 35 },
+            { name: 'Parkir Gratis', type: 'special' },
+            { name: 'FINISH', type: 'special' }
+        ];
+        const totalTiles = boardData.length;
+        const boardPath = [ // Grid coordinates for each tile
+            [4,0],[4,1],[4,2],[4,3],[4,4],[4,5],[4,6],[4,7],
+            [3,7],[2,7],[1,7],[0,7],[0,6],[0,5],[0,4],[0,3],
+        ];
 
-        spinButton.addEventListener('click', () => {
-            resultDiv.textContent = '';
-            spinButton.disabled = true;
+        // --- DOM ELEMENTS ---
+        const boardEl = document.getElementById('board');
+        const statusEl = document.getElementById('status');
+        const diceEl = document.getElementById('dice');
+        const rollBtn = document.getElementById('rollButton');
+        const restartBtn = document.getElementById('restartButton');
+        const playerPanel = document.getElementById('player-panel');
+        const computerPanel = document.getElementById('computer-panel');
+        // ... more DOM elements
+        const playerMoneyEl = document.getElementById('player-money');
+        const computerMoneyEl = document.getElementById('computer-money');
+        const playerAssetsEl = document.getElementById('player-assets');
+        const computerAssetsEl = document.getElementById('computer-assets');
+        const buyPopup = document.getElementById('buy-popup');
+        const popupTitle = document.getElementById('popup-title');
+        const popupText = document.getElementById('popup-text');
+        const buyBtn = document.getElementById('buy-btn');
+        const passBtn = document.getElementById('pass-btn');
 
-            let spinCount = 0;
-            const maxSpins = 30; // Total frames for animation
+        // --- GAME STATE ---
+        let player, computer, currentPlayer, gameOver;
+        let playerPawn, computerPawn;
 
-            const spinInterval = setInterval(() => {
-                reel1.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-                reel2.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-                reel3.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-                spinCount++;
+        function initGame() {
+            player = { id: 'player', name: 'Anda', pos: 0, money: 1500, assets: [], pawn: null };
+            computer = { id: 'computer', name: 'Komputer', pos: 0, money: 1500, assets: [], pawn: null };
+            boardData.forEach(tile => { if(tile.type === 'property') tile.owner = null; });
+            currentPlayer = player;
+            gameOver = false;
+            
+            boardEl.innerHTML = '';
+            createBoard();
+            createPawns();
 
-                if (spinCount > maxSpins) {
-                    clearInterval(spinInterval);
-                    checkWin();
-                    spinButton.disabled = false;
+            updateAllUI();
+            statusEl.textContent = "Giliran Anda untuk melempar dadu!";
+            rollBtn.disabled = false;
+            restartBtn.style.display = 'none';
+            setActivePlayer(player);
+        }
+
+        function createBoard() {
+            boardData.forEach((tileData, i) => {
+                const tile = document.createElement('div');
+                tile.className = 'tile ' + tileData.type;
+                tile.id = `tile-${i}`;
+                const [row, col] = boardPath[i];
+                tile.style.gridRow = row + 1;
+                tile.style.gridColumn = col + 1;
+                tile.innerHTML = `<div>${tileData.name}</div>` + 
+                                (tileData.price ? `<div class="price">Rp${tileData.price}</div>` : '') +
+                                `<div class="tile-owner-indicator" id="owner-${i}"></div>`;
+                boardEl.appendChild(tile);
+            });
+        }
+
+        function createPawns() {
+            player.pawn = document.createElement('div');
+            player.pawn.className = 'player';
+            computer.pawn = document.createElement('div');
+            computer.pawn.className = 'computer';
+            boardEl.appendChild(player.pawn);
+            boardEl.appendChild(computer.pawn);
+            updatePawnPosition(player);
+            updatePawnPosition(computer);
+        }
+
+        function updatePawnPosition(p) {
+            const targetTile = document.getElementById(`tile-${p.pos}`);
+            p.pawn.style.left = `${targetTile.offsetLeft + 10}px`;
+            p.pawn.style.top = `${targetTile.offsetTop + 10}px`;
+            if (p.id === 'computer') p.pawn.style.transform = 'translateX(10px)';
+        }
+
+        function setActivePlayer(p) {
+            playerPanel.classList.remove('active-turn');
+            computerPanel.classList.remove('active-turn');
+            document.getElementById(`${p.id}-panel`).classList.add('active-turn');
+            document.querySelector('.active-turn').style.setProperty('--border-color', p.id === 'player' ? 'var(--player-color)' : 'var(--computer-color)');
+        }
+        
+        function updateAllUI() {
+            playerMoneyEl.textContent = `Rp ${player.money}`;
+            computerMoneyEl.textContent = `Rp ${computer.money}`;
+            
+            playerAssetsEl.innerHTML = player.assets.map(i => `<li>${boardData[i].name}</li>`).join('') || '<li>-</li>';
+            computerAssetsEl.innerHTML = computer.assets.map(i => `<li>${boardData[i].name}</li>`).join('') || '<li>-</li>';
+
+            boardData.forEach((tile, i) => {
+                if(tile.type === 'property'){
+                    const ownerIndicator = document.getElementById(`owner-${i}`);
+                    if(tile.owner === 'player') ownerIndicator.style.backgroundColor = 'var(--player-color)';
+                    else if(tile.owner === 'computer') ownerIndicator.style.backgroundColor = 'var(--computer-color)';
+                    else ownerIndicator.style.backgroundColor = 'transparent';
                 }
-            }, 100); // Animation speed in milliseconds
-        });
+            });
+        }
+        
+        function switchTurn() {
+            if (gameOver) return;
+            currentPlayer = (currentPlayer.id === 'player') ? computer : player;
+            setActivePlayer(currentPlayer);
 
-        function checkWin() {
-            const r1 = reel1.textContent;
-            const r2 = reel2.textContent;
-            const r3 = reel3.textContent;
-
-            if (r1 === r2 && r2 === r3) {
-                if (r1 === "💎") {
-                    resultDiv.textContent = "JACKPOT! 💎💎💎";
-                } else {
-                    resultDiv.textContent = "SELAMAT, ANDA MENANG!";
-                }
+            if (currentPlayer.id === 'computer') {
+                statusEl.textContent = "Giliran Komputer...";
+                rollBtn.disabled = true;
+                setTimeout(computerTurn, 2000);
             } else {
-                resultDiv.textContent = "COBA LAGI!";
+                statusEl.textContent = "Giliran Anda!";
+                rollBtn.disabled = false;
             }
         }
-    </script>
 
+        function movePlayer(p, steps) {
+            const oldPos = p.pos;
+            p.pos = (p.pos + steps) % totalTiles;
+            updatePawnPosition(p);
+
+            if (p.pos < oldPos) { // Passed start
+                p.money += 200;
+                statusEl.textContent = `${p.name} melewati START, dapat Rp 200!`;
+                updateAllUI();
+            }
+
+            setTimeout(() => handleTileAction(p), 600);
+        }
+
+        function handleTileAction(p) {
+            const tile = boardData[p.pos];
+            statusEl.textContent = `${p.name} mendarat di ${tile.name}.`;
+
+            switch(tile.type) {
+                case 'property':
+                    if (!tile.owner) {
+                        // Unowned
+                        if(p.id === 'player') {
+                           promptBuy(p.pos);
+                        } else {
+                           // Computer AI
+                           if(p.money > tile.price * 2) { // Simple AI: buy if it has double the cash
+                               buyProperty(p, p.pos);
+                           } else {
+                               setTimeout(switchTurn, 1000);
+                           }
+                        }
+                    } else if (tile.owner !== p.id) {
+                        // Owned by opponent
+                        payRent(p, tile.owner, tile.rent);
+                    } else {
+                        setTimeout(switchTurn, 1000);
+                    }
+                    break;
+                case 'tax':
+                    p.money -= tile.amount;
+                    statusEl.textContent = `${p.name} membayar pajak Rp ${tile.amount}.`;
+                    checkBankruptcy(p);
+                    setTimeout(switchTurn, 1500);
+                    break;
+                case 'special':
+                    if(tile.name === 'Kesempatan') {
+                        const amount = Math.random() > 0.5 ? 100 : -50;
+                        p.money += amount;
+                        statusEl.textContent = `Kesempatan! ${p.name} ${amount > 0 ? 'dapat' : 'kehilangan'} Rp ${Math.abs(amount)}.`;
+                    }
+                    checkBankruptcy(p);
+                    setTimeout(switchTurn, 1500);
+                    break;
+                default: // Start, Finish, etc.
+                    setTimeout(switchTurn, 1000);
+            }
+            updateAllUI();
+        }
+
+        function promptBuy(tileIndex) {
+            const tile = boardData[tileIndex];
+            popupText.innerHTML = `<strong>${tile.name}</strong><br>Harga: Rp ${tile.price}`;
+            buyPopup.style.display = 'flex';
+
+            buyBtn.onclick = () => {
+                buyProperty(player, tileIndex);
+                buyPopup.style.display = 'none';
+            };
+            passBtn.onclick = () => {
+                buyPopup.style.display = 'none';
+                switchTurn();
+            };
+        }
+
+        function buyProperty(p, tileIndex) {
+            const tile = boardData[tileIndex];
+            if (p.money >= tile.price) {
+                p.money -= tile.price;
+                p.assets.push(tileIndex);
+                tile.owner = p.id;
+                statusEl.textContent = `${p.name} berhasil membeli ${tile.name}!`;
+                updateAllUI();
+                setTimeout(switchTurn, 1000);
+            } else {
+                statusEl.textContent = `${p.name} tidak punya cukup uang.`;
+                setTimeout(switchTurn, 1000);
+            }
+        }
+        
+        function payRent(payer, ownerId, rent) {
+            const owner = ownerId === 'player' ? player : computer;
+            payer.money -= rent;
+            owner.money += rent;
+            statusEl.textContent = `${payer.name} membayar sewa Rp ${rent} ke ${owner.name}.`;
+            checkBankruptcy(payer);
+            updateAllUI();
+            setTimeout(switchTurn, 1500);
+        }
+
+        function checkBankruptcy(p) {
+            if (p.money < 0) {
+                gameOver = true;
+                const winner = p.id === 'player' ? computer : player;
+                statusEl.textContent = `GAME OVER! ${p.name} bangkrut. ${winner.name} MENANG!`;
+                rollBtn.disabled = true;
+                restartBtn.style.display = 'inline-block';
+            }
+        }
+
+        function computerTurn() {
+            const steps = Math.floor(Math.random() * 6) + 1;
+            diceEl.textContent = steps;
+            movePlayer(computer, steps);
+        }
+
+        // --- EVENT LISTENERS ---
+        rollBtn.addEventListener('click', () => {
+            if (currentPlayer.id !== 'player' || gameOver) return;
+            const steps = Math.floor(Math.random() * 6) + 1;
+            diceEl.textContent = steps;
+            rollBtn.disabled = true;
+            movePlayer(player, steps);
+        });
+
+        restartBtn.addEventListener('click', initGame);
+
+        // --- START GAME ---
+        initGame();
+    </script>
 </body>
 </html>
