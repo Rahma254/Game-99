@@ -1,241 +1,26 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- SEO Tags - Siap untuk Anda verifikasi -->
-    <title>Nabila Gaming Studio - Mainkan Game Dingdong Arcade Klasik</title>
-    <meta name="description" content="Nabila Gaming Studio adalah portal untuk bermain game arcade (dingdong) klasik dari era 1990-an seperti Captain Commando, The Punisher, dan Sunset Riders langsung di browser Anda.">
-    <meta name="keywords" content="game dingdong, nabila gaming, game arcade, 1990an, Captain Commando, The Punisher, Sunset Riders, main game online, game klasik, emulator online">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --primary-glow: #00f6ff;
-            --secondary-glow: #ff00e1;
-            --gold-glow: #ffd700;
-            --dark-bg: #0f001a;
-            --light-bg: #2a004a;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            background-color: var(--dark-bg);
-            color: #f0f0f0;
-            overflow-x: hidden;
-            background-image: linear-gradient(rgba(15, 0, 26, 0.95), rgba(15, 0, 26, 0.95)), url('https://www.toptal.com/designers/subtlepatterns/uploads/double-bubble-outline.png');
-        }
-
-        .marquee-container {
-            width: 100%;
-            background: linear-gradient(90deg, var(--primary-glow), var(--secondary-glow));
-            color: black;
-            padding: 8px 0;
-            font-weight: 600;
-            overflow: hidden;
-            white-space: nowrap;
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-
-        .marquee-text {
-            display: inline-block;
-            padding-left: 100%;
-            animation: scroll-left 30s linear infinite;
-        }
-
-        @keyframes scroll-left {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-100%); }
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3.5em;
-            color: var(--gold-glow);
-            text-shadow: 0 0 5px #fff, 0 0 10px var(--gold-glow), 0 0 20px var(--gold-glow);
-            margin: 0;
-        }
-
-        .game-section {
-            background-color: rgba(0,0,0,0.3);
-            border: 2px solid var(--primary-glow);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 0 25px rgba(0, 246, 255, 0.3);
-        }
-
-        .game-tabs {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .tab-button {
-            padding: 12px 25px;
-            font-size: 1em;
-            font-weight: 600;
-            color: var(--primary-glow);
-            background-color: transparent;
-            border: 2px solid var(--primary-glow);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .tab-button:hover {
-            background-color: var(--primary-glow);
-            color: var(--dark-bg);
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-
-        .tab-button.active {
-            background-color: var(--primary-glow);
-            color: var(--dark-bg);
-            box-shadow: 0 0 20px var(--primary-glow);
-            border-color: #fff;
-        }
-
-        .game-window {
-            width: 100%;
-            height: 600px;
-            background-color: #000;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 2px solid var(--secondary-glow);
-            box-shadow: 0 0 20px var(--secondary-glow);
-        }
-        
-        .game-window iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        
-        .info-section {
-            margin-top: 40px;
-            padding: 20px;
-            background: linear-gradient(135deg, var(--light-bg), var(--dark-bg));
-            border-radius: 10px;
-            border: 1px solid var(--secondary-glow);
-            text-align: center;
-        }
-        
-        .info-section h2 {
-            color: var(--gold-glow);
-            font-family: 'Orbitron', sans-serif;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 20px;
-            margin-top: 30px;
-            color: #888;
-        }
-
-        @media (max-width: 768px) {
-            header h1 { font-size: 2.5em; }
-            .game-window { height: 450px; }
-            .tab-button { padding: 10px 15px; font-size: 0.9em; }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="marquee-container">
-        <div class="marquee-text">
-            Selamat Datang di Nabila Gaming Studio! Pilih game favoritmu dari era 90-an dan mainkan sekarang juga! --- Captain Commando, The Punisher, dan Sunset Riders menantimu! --- 
-        </div>
-    </div>
-
-    <div class="container">
-        <header>
-            <h1>NABILA GAMING STUDIO</h1>
-        </header>
-
-        <main class="game-section">
-            <div class="game-tabs" id="game-tabs">
-                <button class="tab-button" data-game="commando">Captain Commando</button>
-                <button class="tab-button" data-game="punisher">The Punisher</button>
-                <button class="tab-button" data-game="cowboy">Sunset Riders (Koboi)</button>
-            </div>
-            
-            <div class="game-window">
-                <iframe id="game-frame" src="" allowfullscreen="true" frameborder="0"></iframe>
-            </div>
-        </main>
-        
-        <section class="info-section">
-            <h2>Tentang Studio Ini</h2>
-            <p>Nabila Gaming Studio adalah sebuah proyek dedikasi untuk melestarikan dan menghadirkan kembali keseruan game-game dingdong legendaris. Kami percaya bahwa keajaiban game klasik tidak lekang oleh waktu. Nikmati pengalaman bermain yang otentik langsung dari browser Anda, tanpa perlu instalasi apapun.</p>
-        </section>
-
-        <footer>
-            <p>© 2025 Nabila Gaming Studio Development. All Rights Reserved.</p>
-        </footer>
-    </div>
-
-    <script>
-        const gameTabs = document.getElementById('game-tabs');
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const gameFrame = document.getElementById('game-frame');
-
-        // URL embed dari Internet Archive
-        const gameSources = {
-            'commando': 'https://archive.org/embed/captcomm',
-            'punisher': 'https://archive.org/embed/punisher',
-            'cowboy': 'https://archive.org/embed/ssriders'
-        };
-        
-        // Fungsi untuk mengaktifkan tab dan memuat game
-        function selectGame(gameKey) {
-            if (!gameSources[gameKey]) {
-                console.error('Game key not found:', gameKey);
-                return;
-            }
-
-            // Set source iframe
-            gameFrame.src = gameSources[gameKey];
-
-            // Atur style tombol aktif
-            tabButtons.forEach(button => {
-                if (button.dataset.game === gameKey) {
-                    button.classList.add('active');
-                } else {
-                    button.classList.remove('active');
-                }
-            });
-        }
-        
-        // Tambahkan event listener ke setiap tombol
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const gameKey = button.dataset.game;
-                selectGame(gameKey);
-            });
-        });
-
-        // Muat game pertama (Captain Commando) secara default saat halaman dibuka
-        document.addEventListener('DOMContentLoaded', () => {
-            selectGame('commando');
-        });
-    </script>
-</body>
-</html>
+{
+  "name": "nabila-gaming-studio",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "vite": "^5.2.0"
+  }
+}
