@@ -1,26 +1,58 @@
-{
-  "name": "nabila-gaming-studio",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.66",
-    "@types/react-dom": "^18.2.22",
-    "@vitejs/plugin-react": "^4.2.1",
-    "eslint": "^8.57.0",
-    "eslint-plugin-react": "^7.34.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.6",
-    "vite": "^5.2.0"
-  }
-}
+// src/main.jsx
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.jsx'
+import './styles/App.css'
+
+// Perintah ini mencari elemen dengan ID 'root' di HTML dan merender komponen App di dalamnya.
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)```
+
+### Kode Lengkap untuk `index.html`
+
+File `index.html` ini harus ditempatkan di **direktori root** proyek Anda (sejajar dengan `package.json`). Berikut adalah kode yang sudah dioptimalkan untuk proyek "Nabila Gaming Studio" Anda, lengkap dengan tag SEO dan link font yang kita gunakan di CSS.
+
+```html
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Meta Tags Utama untuk SEO -->
+    <title>Nabila Gaming Studio - Main Game Retro Klasik 90an Online</title>
+    <meta name="description" content="Mainkan kembali game klasik 90an seperti Sunset Riders, Contra, dan Metal Slug langsung di browser Anda. Nabila Gaming Studio menghadirkan koleksi game arcade retro terbaik dalam format emulator online yang mudah diakses." />
+    <meta name="keywords" content="Nabila Gaming, game klasik, game retro, game 90an, main game jadul, sunset riders online, game koboi jadul, emulator online, game arcade, vercel" />
+    <meta name="author" content="Nabila Gaming Studio Development" />
+    
+    <!-- Open Graph Meta Tags (untuk sharing di media sosial seperti Facebook) -->
+    <meta property="og:title" content="Nabila Gaming Studio - Main Game Retro Klasik 90an Online" />
+    <meta property="og:description" content="Nostalgia game arcade 90an! Mainkan Sunset Riders dan game klasik lainnya gratis." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://[URL-VERCEL-ANDA-NANTI].vercel.app/" />
+    <meta property="og:image" content="https://[URL-GAMBAR-PREVIEW-ANDA].jpg" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Nabila Gaming Studio - Main Game Retro Klasik 90an Online" />
+    <meta name="twitter:description" content="Nostalgia game arcade 90an! Mainkan Sunset Riders dan game klasik lainnya gratis." />
+    <meta name="twitter:image" content="https://[URL-GAMBAR-PREVIEW-ANDA].jpg" />
+
+    <!-- Link untuk Google Fonts yang kita gunakan di CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <!-- Ini adalah 'wadah' tempat seluruh aplikasi React kita akan dirender -->
+    <div id="root"></div>
+    
+    <!-- Skrip ini akan memulai aplikasi React kita -->
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
